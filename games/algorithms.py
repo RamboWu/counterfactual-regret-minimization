@@ -11,6 +11,19 @@ class CounterfactualRegretMinimizationBase:
         self.nash_equilibrium = init_empty_node_maps(root)
         self.chance_sampling = chance_sampling
 
+    def print_sigma(self):
+        #print('when k comes:', self.sigma['.K.'])
+        for info in self.sigma:
+            for action in self.sigma[info]:
+                print(info, ' ', action, ' ', self.sigma[info][action])
+
+    def print_sigma_and_regrets(self):
+        for info in self.sigma:
+            for action in self.sigma[info]:
+                print(info, ' ', action,
+                ' s:', self.sigma[info][action] ,
+                ' r:', self.cumulative_regrets[info][action])
+
     def _update_sigma(self, i):
         rgrt_sum = sum(filter(lambda x : x > 0, self.cumulative_regrets[i].values()))
         for a in self.cumulative_regrets[i]:
@@ -74,6 +87,8 @@ class CounterfactualRegretMinimizationBase:
             # we multiply regret by -1 for player B, this is because value is computed from player A perspective
             # again we need that perspective switch
             action_cfr_regret = state.to_move * cfr_reach * (children_states_utilities[action] - value)
+            if action_cfr_regret < 0:
+                action_cfr_regret = 0
             self._cumulate_cfr_regret(state.inf_set(), action, action_cfr_regret)
             self._cumulate_sigma(state.inf_set(), action, reach * self.sigma[state.inf_set()][action])
         if self.chance_sampling:
