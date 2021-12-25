@@ -66,8 +66,9 @@ class CounterfactualRegretMinimizationBase:
             if action_cfr_regret <= 0:
                 action_cfr_regret = 0
             if need_print:
-                print('payoff: ', children_states_utilities[action], ' value:', value)
+                print('----------------------')
                 print(state.inf_set(), '|A:', action, '|G:', action_cfr_regret)
+                print('To_move:', state.to_move, 'payoff: ', children_states_utilities[action], ' value:', value)
             self._cumulate_cfr_regret(state.inf_set(), action, action_cfr_regret)
         if self.chance_sampling:
             # update sigma according to cumulative regrets - we can do it here because we are using chance sampling
@@ -111,5 +112,5 @@ class ChanceSamplingCFR(CounterfactualRegretMinimizationBase):
         for _ in range(0, 1000):
             self._cfr_utility_recursive(self.root, 1, 1)
         self.print_sigma()
-        print('--------------Try QJ--------------')
-        self._cfr_utility_recursive(self.root.children[QJ], 1, 1, True)
+        print('--------------Try QK--------------')
+        self._cfr_utility_recursive(self.root.children[QK], 1, 1, True)
